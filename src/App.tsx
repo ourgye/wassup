@@ -1,24 +1,35 @@
 import { useState } from "react";
 import "./App.css";
+import SpeechBubble from "./components/SpeechBubble";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const [message, setMessage] = useState<string>("");
+  const [messageList, setMessageList] = useState<string[]>(["안녕하세요"]);
   return (
     <>
-      <div></div>
-      <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        {messageList.map((m: string) => (
+          <SpeechBubble message={m} />
+        ))}
+        <form className="text-sm bg-gray-400 flex flex-row gap-1">
+          <input
+            id="message"
+            value={message}
+            placeholder="입력하세요"
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (message) setMessageList([...messageList, message]);
+              setMessage("");
+            }}
+            className="px-2 py-0"
+          >
+            입력
+          </button>
+        </form>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
