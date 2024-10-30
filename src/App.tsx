@@ -4,22 +4,38 @@ import SpeechBubble from "./components/SpeechBubble";
 
 function App() {
   const [message, setMessage] = useState<string>("");
-  const [messageList, setMessageList] = useState<string[]>(["안녕하세요"]);
+  const [messageList, setMessageList] = useState<
+    { text: string; style: number }[]
+  >([{ text: "안녕하세요", style: Math.floor(Math.random() * 3) }]);
+
+  const getRandomStyleIndex = () => Math.floor(Math.random() * 3);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message) {
+      setMessageList([
+        ...messageList,
+        { text: message, style: getRandomStyleIndex() },
+      ]);
+      setMessage("");
+    }
+  };
+
   return (
     <>
       <div className="w-full h-full flex flex-col justify-between">
         <div>
-          {messageList.map((m: string) => (
-            <SpeechBubble message={m} />
+          {messageList.map((m, i) => (
+            <SpeechBubble
+              message={m.text}
+              styleIndex={m.style}
+              key={`${m.text}-${i}`}
+            />
           ))}
         </div>
         <form
           className="text-sm bg-gray-400 flex flex-row gap-2 w-full px-2 py-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (message) setMessageList([...messageList, message]);
-            setMessage("");
-          }}
+          onSubmit={handleSubmit}
         >
           <input
             id="message"
