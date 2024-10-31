@@ -1,3 +1,5 @@
+export const getRandomStyleIndex = () => Math.floor(Math.random() * 3);
+
 function SpeechBubble({
   message,
   styleIndex,
