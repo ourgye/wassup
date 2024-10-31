@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getRandomStyleIndex } from "./SpeechBubble";
+import { getRandomCount, getRandomStyleIndex } from "./SpeechBubble";
 
 function InputForm({
   setMessageList,
@@ -21,13 +21,16 @@ function InputForm({
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log("handle submit");
     e.preventDefault();
+    const newMessageRandom: {
+      text: string;
+      style: number;
+    }[] = Array.from({ length: getRandomCount() }).map(() => ({
+      text: message,
+      style: getRandomStyleIndex(),
+    }));
     if (message) {
-      setMessageList([
-        ...messageList,
-        { text: message, style: getRandomStyleIndex() },
-      ]);
+      setMessageList([...messageList, ...newMessageRandom]);
       setMessage("");
     }
   };
@@ -37,17 +40,20 @@ function InputForm({
   };
   return (
     <form
-      className="text-sm bg-gray-400 flex flex-row gap-2 w-full px-2 py-2"
+      className="text-sm bg-gray-100 border-gray-500 flex flex-row gap-2 w-full px-2 py-1"
       onSubmit={handleSubmit}
     >
       <input
         id="message"
-        className="w-full px-2 rounded-md"
+        className="w-full px-2 rounded-md focus:outline-none"
         value={message}
         placeholder="입력하세요"
         onChange={handleInputValueChange}
       />
-      <button type="submit" className="px-2 py-0.5 line break-keep">
+      <button
+        type="submit"
+        className="px-2 py-0.5 line break-keep hover:border-gray-800 focus:outline-none"
+      >
         입력
       </button>
     </form>
