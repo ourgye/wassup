@@ -17,6 +17,12 @@ function App() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-between ">
+        <div>
+          <InputForm
+            messageList={messageList}
+            setMessageList={setMessageList}
+          />
+        </div>
         <div
           className="h-full relative overflow-hidden"
           ref={bubbleContainerRef}
@@ -30,7 +36,6 @@ function App() {
             />
           ))}
         </div>
-        <InputForm messageList={messageList} setMessageList={setMessageList} />
       </div>
     </>
   );

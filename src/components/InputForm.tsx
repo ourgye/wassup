@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { getRandomCount, getRandomStyleIndex } from "./SpeechBubble";
+import { getRandomCount, getRandomStyleIndex } from "@/components/SpeechBubble";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  // DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Input } from "./ui/input";
 
 function InputForm({
   setMessageList,
@@ -39,24 +51,43 @@ function InputForm({
     setMessage(e.target.value);
   };
   return (
-    <form
-      className="text-sm bg-gray-100 border-gray-500 flex flex-row gap-2 w-full px-2 py-1"
-      onSubmit={handleSubmit}
-    >
-      <input
-        id="message"
-        className="w-full px-2 rounded-md focus:outline-none"
-        value={message}
-        placeholder="입력하세요"
-        onChange={handleInputValueChange}
-      />
-      <button
-        type="submit"
-        className="px-2 py-0.5 line break-keep hover:border-gray-800 focus:outline-none"
-      >
-        입력
-      </button>
-    </form>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant={"outline"} size={"sm"}>
+          +
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>말풍선 추가</DialogTitle>
+          <DialogDescription>
+            말풍선을 추가해보세요. 개수와 색깔을 지정할 수 있습니다.
+            <br />
+            랜덤도 가능!
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          className="text-sm flex flex-row gap-2 px-2 py-1"
+          onSubmit={handleSubmit}
+        >
+          <Input
+            id="message"
+            className="w-full px-2 rounded-md focus:outline-none"
+            value={message}
+            placeholder="입력하세요"
+            onChange={handleInputValueChange}
+          />
+          <DialogClose asChild>
+            <Button
+              type="submit"
+              className="px-2 py-0.5 line break-keep hover:border-gray-800 focus:outline-none"
+            >
+              입력
+            </Button>
+          </DialogClose>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
