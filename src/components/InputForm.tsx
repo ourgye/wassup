@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { getRandomCount, getRandomStyleIndex } from "@/components/SpeechBubble";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
+import AddIcon from "@/assets/icon/add.svg?react";
 
 function InputForm({
   setMessageList,
@@ -53,8 +54,8 @@ function InputForm({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} size={"sm"}>
-          +
+        <Button variant={"outline"} size={"icon"} className="rounded-full">
+          <AddIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
