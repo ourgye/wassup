@@ -12,7 +12,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
-import AddIcon from "@/assets/icon/add.svg?react";
+import AddIcon from "@/assets/icon/addBubble.svg?react";
 
 function InputForm({
   setMessageList,

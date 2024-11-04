@@ -11,6 +11,7 @@ import {
 import DeleteIcon from "@/assets/icon/deleteAll.svg?react";
 import TextDecreaseIcon from "@/assets/icon/textDecrease.svg?react";
 import TextIncreaseIcon from "@/assets/icon/textIncrease.svg?react";
+import AddImageIcon from "@/assets/icon/background.svg?react";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
@@ -34,10 +35,7 @@ function App() {
     e.stopPropagation();
     e.preventDefault();
   }, []);
-  console.log(
-    bubbleContainerRef.current?.offsetWidth,
-    bubbleContainerRef.current?.offsetHeight
-  );
+
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.stopPropagation();
@@ -100,14 +98,42 @@ function App() {
     <>
       <div className="w-full h-full flex flex-col justify-between items-center">
         <div className="flex flex-row items-center">
+          <input id="bg-img" type="file" className="hidden" />
+          <label htmlFor="bg-img">
+            <Button size={"icon"} variant={"outline"} asChild>
+              <div className="[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
+                <AddImageIcon />
+              </div>
+            </Button>
+          </label>
           <InputForm
             messageList={messageList}
             setMessageList={setMessageList}
           />
+
+          <div className="mx-4 flex flex-row items-center gap-2">
+            <Button
+              size={"icon"}
+              variant={"outline"}
+              onClick={handleTextSizeDecrease}
+            >
+              <TextDecreaseIcon />
+            </Button>
+            <div className="w-16 h-10 flex items-center justify-center text-sm">
+              사이즈
+            </div>
+            <Button
+              size={"icon"}
+              variant={"outline"}
+              onClick={handleTextSizeIncrease}
+            >
+              <TextIncreaseIcon />
+            </Button>
+          </div>
           <Popover>
-            <PopoverTrigger>
-              <Button type="button" size={"icon"} variant={"outline"}>
-                <DeleteIcon />
+            <PopoverTrigger asChild>
+              <Button type="button" size={"icon"} variant={"destructive"}>
+                <DeleteIcon fill="#000" />
               </Button>
             </PopoverTrigger>
             <PopoverContent>
@@ -131,25 +157,6 @@ function App() {
               </Button>
             </PopoverContent>
           </Popover>
-          <div className="mx-4 flex flex-row items-center gap-2">
-            <Button
-              size={"icon"}
-              variant={"outline"}
-              onClick={handleTextSizeDecrease}
-            >
-              <TextDecreaseIcon />
-            </Button>
-            <div className="w-16 h-10 flex items-center justify-center text-sm">
-              사이즈
-            </div>
-            <Button
-              size={"icon"}
-              variant={"outline"}
-              onClick={handleTextSizeIncrease}
-            >
-              <TextIncreaseIcon />
-            </Button>
-          </div>
         </div>
         <div
           className={`relative overflow-hidden ${
