@@ -1,13 +1,25 @@
 import { useCallback, useRef, useState } from "react";
 import "./App.css";
-import SpeechBubble from "./components/SpeechBubble";
+import SpeechBubble, { getRandomStyleIndex } from "./components/SpeechBubble";
 import InputForm from "./components/InputForm";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
-  const [messageList, setMessageList] = useState<
-    { text: string; style: number }[]
-  >([]);
+  const [messageList, setMessageList] = useState<speechBubble[]>([
+    {
+      text: "안녕하세요",
+      style: getRandomStyleIndex(),
+      color: "#ffffff",
+    },
+  ]);
+  // const handleBubbleClick = (index: number) => {
+  //   setMessageList((prev) => {
+  //     const newList = [...prev];
+  //     const [clickedBubble] = newList.splice(index, 1); // 클릭한 아이템을 배열에서 제거
+  //     newList.unshift(clickedBubble); // 배열의 앞에 추가
+  //     return newList;
+  //   });
+  // };
   const [isBackgroundImage, setIsBackgroundImage] = useState<boolean>(false);
 
   // for image drag
@@ -45,7 +57,7 @@ function App() {
         setIsBackgroundImage(true);
       }
     },
-    [bubbleContainerRef],
+    [bubbleContainerRef]
   );
 
   return (
@@ -58,7 +70,11 @@ function App() {
           />
         </div>
         <div
-          className={`relative overflow-hidden ${isBackgroundImage ? "bg-contain bg-no-repeat bg-center" : "h-full w-full"}`}
+          className={`relative overflow-hidden ${
+            isBackgroundImage
+              ? "bg-contain bg-no-repeat bg-center"
+              : "h-full w-full"
+          }`}
           ref={bubbleContainerRef}
           onDragOver={handleDragOver}
           onDragEnter={handelDrageEnter}
@@ -67,10 +83,9 @@ function App() {
           {messageList.map((m, i) => (
             <SpeechBubble
               key={`${m.text}-${i}`}
-              q
-              message={m.text}
-              styleIndex={m.style}
+              data={m}
               parent={bubbleContainerRef}
+              // onClick={() => handleBubbleClick(i)}
             />
           ))}
         </div>

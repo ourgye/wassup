@@ -18,29 +18,21 @@ function InputForm({
   setMessageList,
   messageList,
 }: {
-  setMessageList: React.Dispatch<
-    React.SetStateAction<
-      {
-        text: string;
-        style: number;
-      }[]
-    >
-  >;
-  messageList: {
-    text: string;
-    style: number;
-  }[];
+  setMessageList: React.Dispatch<React.SetStateAction<speechBubble[]>>;
+  messageList: speechBubble[];
 }) {
   const [message, setMessage] = useState<string>("");
+  const [count, setCount] = useState<number>(getRandomCount);
+  const [color, setColor] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newMessageRandom: {
-      text: string;
-      style: number;
-    }[] = Array.from({ length: getRandomCount() }).map(() => ({
+    const newMessageRandom: speechBubble[] = Array.from({
+      length: count || getRandomCount(),
+    }).map(() => ({
       text: message,
       style: getRandomStyleIndex(),
+      color: color,
     }));
     if (message) {
       setMessageList([...messageList, ...newMessageRandom]);
@@ -48,9 +40,16 @@ function InputForm({
     }
   };
 
-  const handleInputValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMsgValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
   };
+  const handleCountValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCount(Number(e.target.value));
+  };
+  const handleColorValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -68,7 +67,7 @@ function InputForm({
           </DialogDescription>
         </DialogHeader>
         <form
-          className="text-sm flex flex-row gap-2 px-2 py-1"
+          className="text-sm flex flex-col gap-2 px-2 py-1"
           onSubmit={handleSubmit}
         >
           <Input
@@ -76,7 +75,22 @@ function InputForm({
             className="w-full px-2 rounded-md focus:outline-none"
             value={message}
             placeholder="입력하세요"
-            onChange={handleInputValueChange}
+            onChange={handleMsgValueChange}
+          />
+          <span>개수와 색상</span>
+          <Input
+            id="count"
+            className="w-full px-2 rounded-md focus:outline-none"
+            value={count}
+            type="number"
+            onChange={handleCountValueChange}
+          />
+          <Input
+            id="color"
+            className="w-full p-0 px-1 rounded-md focus:outline-none"
+            value={color}
+            type="color"
+            onChange={handleColorValueChange}
           />
           <DialogClose asChild>
             <Button
