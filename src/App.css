@@ -1,7 +1,7 @@
 #root {
   width: 100%;
-  height: calc(100% - 1em);
-  margin: 1em;
+  height: 100%;
+  /* margin: 1em; */
   text-align: center;
 }
 

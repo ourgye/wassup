@@ -23,7 +23,8 @@ function InputForm({
 }) {
   const [message, setMessage] = useState<string>("");
   const [count, setCount] = useState<number>(getRandomCount);
-  const [color, setColor] = useState<string>("");
+  const [color, setColor] = useState<string>("#ffffff");
+  const [textColor, setTextColor] = useState<string>("#000");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ function InputForm({
       text: message,
       style: getRandomStyleIndex(),
       color: color,
+      textColor: textColor,
     }));
     if (message) {
       setMessageList([...messageList, ...newMessageRandom]);
@@ -49,21 +51,24 @@ function InputForm({
   const handleColorValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColor(e.target.value);
   };
+  const handleTextColorValueChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setTextColor(e.target.value);
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} size={"icon"} className="rounded-full m-2">
+        <Button variant={"outline"} size={"icon"} className="m-2">
           <AddIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>말풍선 추가</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs">
             말풍선을 추가해보세요. 개수와 색깔을 지정할 수 있습니다.
-            <br />
-            랜덤도 가능!
           </DialogDescription>
         </DialogHeader>
         <form
@@ -75,27 +80,37 @@ function InputForm({
             className="w-full px-2 rounded-md focus:outline-none"
             value={message}
             placeholder="입력하세요"
+            title="내용"
             onChange={handleMsgValueChange}
           />
-          <span>개수와 색상</span>
           <Input
             id="count"
-            className="w-full px-2 rounded-md focus:outline-none"
+            className="w-1/3 rounded-md focus:outline-none inline-block"
             value={count}
+            title="개수"
             type="number"
             onChange={handleCountValueChange}
           />
           <Input
             id="color"
-            className="w-full p-0 px-1 rounded-md focus:outline-none"
+            className="w-1/3 rounded-md focus:outline-none inline-block"
             value={color}
+            title="말풍선 색상"
             type="color"
             onChange={handleColorValueChange}
+          />
+          <Input
+            id="textColor"
+            className="w-1/3 rounded-md focus:outline-none inline-block"
+            value={textColor}
+            title="글꼴 색상"
+            type="color"
+            onChange={handleTextColorValueChange}
           />
           <DialogClose asChild>
             <Button
               type="submit"
-              className="px-2 py-0.5 line break-keep hover:border-gray-800 focus:outline-none"
+              className="mt-4 px-2 py-0.5 line break-keep hover:border-gray-800 focus:outline-none"
             >
               입력
             </Button>

@@ -5,30 +5,27 @@ const getRandomStyleIndex = () => Math.floor(Math.random() * 3);
 const getRandomCount = () => Math.floor(Math.random() * 5 + 1);
 
 interface SpeechBubbleProps {
-  data: {
-    text: string;
-    color: string;
-    style: number;
-  };
+  data: speechBubble;
   parent: React.RefObject<HTMLDivElement>;
 }
 
 const bubbleStyles = [
-  { body: "", tail: "-bottom-2 right-1/2 translate-x-1/2" },
-  { body: "rounded-bl-none", tail: "-bottom-2 border-l-0 left-0" },
-  { body: "rounded-br-none", tail: "-bottom-2 border-r-0 right-0" },
+  { body: "", tail: "-bottom-[0.5em] right-1/2 translate-x-1/2" },
+  { body: "rounded-bl-none", tail: "-bottom-[0.5em] border-l-0 left-0" },
+  { body: "rounded-br-none", tail: "-bottom-[0.5em] border-r-0 right-0" },
 ];
 
 const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
   const backgroundColorStyle: React.CSSProperties = {
     backgroundColor: data.color,
+    color: data.textColor,
   };
 
   const tailColorStyle: React.CSSProperties = {
     borderTopColor: data.color,
   };
 
-  const commonBubbleStyle = `relative px-4 h-8 text-sm text-center flex justify-center items-center rounded-lg mb-[0.5rem]`;
+  const commonBubbleStyle = `relative px-[0.6em] text-center flex justify-center items-center rounded-lg mb-[0.5rem]`;
 
   const selectedStyle = bubbleStyles[data.style] || bubbleStyles[0]; // fallback to default style
 
@@ -48,7 +45,7 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
           <span>{data.text}</span>
           <div
             style={tailColorStyle}
-            className={`absolute w-0 h-0 border-transparent border-[0.6rem] border-b-0 ${selectedStyle.tail}`}
+            className={`absolute w-0 h-0 border-transparent border-[0.6em] border-b-0 ${selectedStyle.tail}`}
           />
         </div>
       </div>
