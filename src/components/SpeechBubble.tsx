@@ -12,8 +12,9 @@ function SpeechBubble({
   styleIndex: number;
   parent: React.RefObject<HTMLDivElement>;
 }) {
-  const commonBubbleStyle =
-    "relative px-4 h-8 bg-red-300 text-sm text-center flex justify-center items-center rounded-lg mb-[0.5rem]";
+  const color = "red-300";
+  const commonBubbleStyle = `relative px-4 h-8 text-sm text-center flex justify-center items-center rounded-lg mb-[0.5rem] bg-white`;
+  const commonTailStyle = `absolute w-0 h-0 border-transparent border-[0.6rem] border-b-0 border-t-white`;
   const bubbleStyles = [
     { body: "", tail: "-bottom-2 right-1/2 translate-x-1/2" },
     { body: "rounded-bl-none", tail: "-bottom-2 border-l-0 left-0" },
@@ -27,7 +28,7 @@ function SpeechBubble({
   console.log(
     "width, height: ",
     parent.current?.offsetWidth,
-    parent.current?.offsetHeight
+    parent.current?.offsetHeight,
   );
 
   return (
@@ -41,9 +42,7 @@ function SpeechBubble({
       <div className="max-w-fit cursor-pointer absolute">
         <div className={`${commonBubbleStyle} ${selectedStyle.body}`}>
           <span>{message}</span>
-          <div
-            className={`absolute w-0 h-0 border-transparent border-[0.6rem] border-t-red-300 border-b-0 ${selectedStyle.tail}`}
-          />
+          <div className={`${commonTailStyle} ${selectedStyle.tail}`} />
         </div>
       </div>
     </Draggable>

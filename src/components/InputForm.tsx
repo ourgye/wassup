@@ -54,7 +54,7 @@ function InputForm({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} size={"icon"} className="rounded-full">
+        <Button variant={"outline"} size={"icon"} className="rounded-full m-2">
           <AddIcon />
         </Button>
       </DialogTrigger>
