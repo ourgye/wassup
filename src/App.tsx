@@ -42,46 +42,35 @@ function App() {
     e.preventDefault();
   }, []);
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      const files = e.dataTransfer.files;
-      if (files.length === 0) {
-        return;
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length === 0) {
+      return;
+    }
+    const file = files[0];
+    if (file.type.match(/image.*/)) {
+      const imgElement = document.getElementById(
+        "droppedImage"
+      ) as HTMLImageElement;
+      if (imgElement) {
+        imgElement.remove(); // 이미지를 완전히 제거
       }
-      const file = files[0];
-      if (file.type.match(/image.*/)) {
-        if (imgRef.current && imgRef.current.attributes.getNamedItem("src")) {
-          imgRef.current.removeAttribute("src");
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.src = e.target?.result as string;
-          img.id = "droppedImage";
-          img.onload = () => {
-            imgRef.current?.replaceWith(img);
-            // imgContainer?.appendChild(img);
-            // if (bubbleContainerRef.current) {
-            //   // bubbleContainerRef.current.style.backgroundImage = `url(${img.src})`;
-            //   // bubbleContainerRef.current.style.width = `${
-            //   //   img.width > window.innerWidth ? window.innerWidth : img.width
-            //   // }px`;
-            //   // bubbleContainerRef.current.style.height = `${
-            //   //   img.height > window.innerHeight
-            //   //     ? window.innerHeight
-            //   //     : img.height
-            //   // }px`;
-            // }
-          };
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target?.result as string;
+        img.id = "droppedImage";
+        img.onload = () => {
+          document.getElementById("backimg")?.appendChild(img);
+          setIsBackgroundImage(true);
         };
-        reader.readAsDataURL(file);
-        setIsBackgroundImage(true);
-      }
-    },
-    [bubbleContainerRef]
-  );
+      };
+      reader.readAsDataURL(file);
+      setIsBackgroundImage(true);
+    }
+  }, []);
   const handleCaptureBtn = () => {
     if (imgConRef.current) {
       htmlToImage
@@ -144,9 +133,11 @@ function App() {
             ))}
         </div>
         {!isBackgroundImage && (
-          <div className="w-full h-full text-base">
-            + 버튼을 클릭해 말풍선을 추가해보세요. <br />
-            드래그 앤 드롭으로 이미지를 넣어보세요.
+          <div className="w-full h-full text-base flex justify-center items-center">
+            <p>
+              + 버튼을 클릭해 말풍선을 추가해보세요. <br />
+              드래그 앤 드롭 혹은 이미지 버튼을 클릭으로 이미지를 넣어보세요.
+            </p>
           </div>
         )}
       </div>

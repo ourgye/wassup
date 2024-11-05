@@ -67,7 +67,6 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       if (imgElement) {
         imgElement.remove(); // 이미지를 완전히 제거
       }
-      console.log(imgRef.current);
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
