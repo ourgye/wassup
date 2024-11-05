@@ -15,13 +15,14 @@ interface MainHeaderProps {
   messageList: speechBubble[];
   setIsBackgroundImage: React.Dispatch<React.SetStateAction<boolean>>;
   bubbleContainerRef: React.RefObject<HTMLDivElement>;
+  imgRef: React.RefObject<HTMLImageElement>;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = ({
   setMessageList,
   messageList,
   setIsBackgroundImage,
-  bubbleContainerRef,
+  imgRef,
 }) => {
   const handleRemoveAllSpeechBubbles = () => {
     setMessageList([]);
@@ -29,11 +30,21 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const handleRemoveBackgroundImage = () => {
     setMessageList([]);
     setIsBackgroundImage(false);
-    if (bubbleContainerRef?.current) {
-      bubbleContainerRef.current.style.backgroundImage = "none";
+
+    // droppedImage 요소 제거
+    const imgElement = document.getElementById(
+      "droppedImage"
+    ) as HTMLImageElement;
+    if (imgElement) {
+      imgElement.remove(); // 이미지를 완전히 제거
+    }
+    const inputFile = document.getElementById("bg-img") as HTMLInputElement;
+    if (inputFile) {
+      inputFile.value = ""; // 파일 입력 초기화
     }
   };
-  const handleTextSizeIncrease = (e: React.MouseEvent) => {
+
+  const handleTextSizeIncrease = () => {
     const currentSize = parseInt(getComputedStyle(document.body).fontSize);
     if (currentSize < 36) {
       document.body.style.fontSize = `${currentSize + 2}px`;
@@ -52,18 +63,23 @@ const MainHeader: React.FC<MainHeaderProps> = ({
     }
     const file = files[0];
     if (file.type.match(/image.*/)) {
+      const imgElement = document.getElementById("droppedImage");
+      if (imgElement) {
+        imgElement.remove(); // 이미지를 완전히 제거
+      }
+      console.log(imgRef.current);
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.src = e.target?.result as string;
+        img.id = "droppedImage";
         img.onload = () => {
-          if (bubbleContainerRef.current) {
-            bubbleContainerRef.current.style.backgroundImage = `url(${img.src})`;
-          }
+          document.getElementById("backimg")?.appendChild(img);
+          // 배경 이미지가 설정되었음을 상태로 반영
+          setIsBackgroundImage(true);
         };
       };
       reader.readAsDataURL(file);
-      setIsBackgroundImage(true);
     }
   };
 

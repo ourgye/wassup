@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Draggable from "react-draggable";
 
 const getRandomStyleIndex = () => Math.floor(Math.random() * 3);
@@ -16,6 +16,23 @@ const bubbleStyles = [
 ];
 
 const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
+  const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
+  const bubbleRef = useRef<HTMLDivElement>(null);
+
+  // 부모의 크기를 기반으로 초기 위치 설정
+  useEffect(() => {
+    if (parent.current && bubbleRef.current) {
+      const parentWidth = parent.current.clientWidth;
+      const parentHeight = parent.current.offsetHeight;
+
+      // 랜덤 위치 계산: 부모 크기를 기준으로 계산하여 말풍선이 부모 영역 안에 위치하도록
+      setDefaultPosition({
+        x: Math.random() * parentWidth, // 부모의 너비 내에서 랜덤 위치
+        y: Math.random() * parentHeight, // 부모의 높이 내에서 랜덤 위치
+      });
+    }
+  }, [parent]);
+
   const backgroundColorStyle: React.CSSProperties = {
     backgroundColor: data.color,
     color: data.textColor,
@@ -29,15 +46,12 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
 
   const selectedStyle = bubbleStyles[data.style] || bubbleStyles[0]; // fallback to default style
 
-  // Get random position only on mount
-  const defaultPosition = {
-    x: Math.random() * (parent.current?.offsetWidth || 100),
-    y: Math.random() * (parent.current?.offsetHeight || 100),
-  };
-
   return (
-    <Draggable bounds="parent" defaultPosition={defaultPosition}>
-      <div className="max-w-fit cursor-pointer absolute">
+    <Draggable
+      bounds="parent"
+      defaultPosition={defaultPosition} // 부모 크기 기반으로 초기 위치 설정
+    >
+      <div className="max-w-fit cursor-pointer absolute" ref={bubbleRef}>
         <div
           style={backgroundColorStyle}
           className={`${commonBubbleStyle} ${selectedStyle.body}`}

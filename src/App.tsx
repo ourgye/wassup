@@ -3,7 +3,6 @@ import "./App.css";
 import SpeechBubble from "./components/SpeechBubble";
 import MainHeader from "./components/MainHeader";
 import * as htmlToImage from "html-to-image";
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
 import { Button } from "./components/ui/button";
 import {
   Popover,
@@ -20,6 +19,8 @@ import {
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
+  const imgConRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [messageList, setMessageList] = useState<speechBubble[]>([]);
   const [isBackgroundImage, setIsBackgroundImage] = useState<boolean>(false);
   // const handleBubbleClick = (index: number) => {
@@ -51,22 +52,28 @@ function App() {
       }
       const file = files[0];
       if (file.type.match(/image.*/)) {
+        if (imgRef.current && imgRef.current.attributes.getNamedItem("src")) {
+          imgRef.current.removeAttribute("src");
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
           img.src = e.target?.result as string;
+          img.id = "droppedImage";
           img.onload = () => {
-            if (bubbleContainerRef.current) {
-              bubbleContainerRef.current.style.backgroundImage = `url(${img.src})`;
-              // bubbleContainerRef.current.style.width = `${
-              //   img.width > window.innerWidth ? window.innerWidth : img.width
-              // }px`;
-              // bubbleContainerRef.current.style.height = `${
-              //   img.height > window.innerHeight
-              //     ? window.innerHeight
-              //     : img.height
-              // }px`;
-            }
+            imgRef.current?.replaceWith(img);
+            // imgContainer?.appendChild(img);
+            // if (bubbleContainerRef.current) {
+            //   // bubbleContainerRef.current.style.backgroundImage = `url(${img.src})`;
+            //   // bubbleContainerRef.current.style.width = `${
+            //   //   img.width > window.innerWidth ? window.innerWidth : img.width
+            //   // }px`;
+            //   // bubbleContainerRef.current.style.height = `${
+            //   //   img.height > window.innerHeight
+            //   //     ? window.innerHeight
+            //   //     : img.height
+            //   // }px`;
+            // }
           };
         };
         reader.readAsDataURL(file);
@@ -76,9 +83,9 @@ function App() {
     [bubbleContainerRef]
   );
   const handleCaptureBtn = () => {
-    if (bubbleContainerRef.current)
+    if (imgConRef.current) {
       htmlToImage
-        .toPng(bubbleContainerRef.current)
+        .toPng(imgConRef.current)
         .then(function (dataUrl) {
           const img = new Image();
           img.src = dataUrl;
@@ -88,10 +95,11 @@ function App() {
           alert("캡쳐에 실패했습니다. 다시 시도해주세요.");
           console.error("캡처 실패..", error);
         });
+    }
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between items-center">
+    <div className="w-full h-full flex flex-col items-center">
       <Dialog>
         <DialogTrigger asChild>
           <Button
@@ -112,33 +120,35 @@ function App() {
         setIsBackgroundImage={setIsBackgroundImage}
         messageList={messageList}
         bubbleContainerRef={bubbleContainerRef}
+        imgRef={imgRef}
       />
       <div
-        className={`relative overflow-hidden bg-white ${
-          isBackgroundImage
-            ? "h-full w-full bg-contain bg-no-repeat bg-center"
-            : "h-full w-full"
+        className={`relative overflow-hidden h-full w-full bg-white flex justify-center items-center ${
+          isBackgroundImage ? "bg-contain bg-no-repeat bg-center" : ""
         }`}
         ref={bubbleContainerRef}
         onDragOver={handleDragOver}
         onDragEnter={handelDrageEnter}
         onDrop={handleDrop}
       >
-        {messageList.length > 0
-          ? messageList.map((m, i) => (
+        <div id="backimg" className="size-fit relative" ref={imgConRef}>
+          <img id="droppedImage" ref={imgRef} />
+          {messageList.length > 0 &&
+            messageList.map((m, i) => (
               <SpeechBubble
                 key={`${m.text}-${i}`}
                 data={m}
-                parent={bubbleContainerRef}
+                parent={imgConRef}
                 // onClick={() => handleBubbleClick(i)}
               />
-            ))
-          : !isBackgroundImage && (
-              <div className="w-full text-base">
-                + 버튼을 클릭해 말풍선을 추가해보세요. <br />
-                드래그 앤 드롭으로 이미지를 넣어보세요.
-              </div>
-            )}
+            ))}
+        </div>
+        {!isBackgroundImage && (
+          <div className="w-full h-full text-base">
+            + 버튼을 클릭해 말풍선을 추가해보세요. <br />
+            드래그 앤 드롭으로 이미지를 넣어보세요.
+          </div>
+        )}
       </div>
     </div>
   );
