@@ -25,7 +25,7 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
     borderTopColor: data.color,
   };
 
-  const commonBubbleStyle = `relative px-[0.6em] text-center flex justify-center items-center rounded-lg mb-[0.5rem]`;
+  const commonBubbleStyle = `relative px-[0.6em] py-[0.1em] text-center flex justify-center items-center rounded-lg mb-[0.5rem]`;
 
   const selectedStyle = bubbleStyles[data.style] || bubbleStyles[0]; // fallback to default style
 
