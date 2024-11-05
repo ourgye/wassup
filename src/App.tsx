@@ -93,12 +93,38 @@ function App() {
       document.body.style.fontSize = `${currentSize - 2}px`;
     }
   };
+  const handleBackgroundUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+    const file = files[0];
+    if (file.type.match(/image.*/)) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target?.result as string;
+        img.onload = () => {
+          if (bubbleContainerRef.current) {
+            bubbleContainerRef.current.style.backgroundImage = `url(${img.src})`;
+          }
+        };
+      };
+      reader.readAsDataURL(file);
+      setIsBackgroundImage(true);
+    }
+  };
 
   return (
     <>
       <div className="w-full h-full flex flex-col justify-between items-center">
         <div className="flex flex-row items-center">
-          <input id="bg-img" type="file" className="hidden" />
+          <input
+            id="bg-img"
+            type="file"
+            className="hidden"
+            onChange={handleBackgroundUpload}
+          />
           <label htmlFor="bg-img">
             <Button size={"icon"} variant={"outline"} asChild>
               <div className="[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
