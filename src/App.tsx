@@ -106,7 +106,7 @@ function App() {
           </Button>
         </DialogTrigger>
         <DialogContent className="bg-gray-100">
-          {loading && "로딩중..."}
+          {loading && <span className="text-xl">로딩중...</span>}
           <div id="captured-img" className="overflow-scroll"></div>
         </DialogContent>
       </Dialog>
