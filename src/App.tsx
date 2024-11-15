@@ -4,7 +4,8 @@ import SpeechBubble from "./components/SpeechBubble";
 import MainHeader from "./components/MainHeader";
 import { Button } from "./components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
-import { domToPng } from "modern-screenshot";
+import * as htmlToImage from "html-to-image";
+// import { domToImage } from "modern-screenshot";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +63,13 @@ function App() {
   }, []);
   const handleCaptureBtn = () => {
     if (imgConRef.current) {
-      domToPng(imgConRef.current)
+      // 새로운 라이브러리
+      // domToImage(imgConRef.current).then((item) =>
+      //   document.getElementById("captured-img")?.appendChild(item)
+      // );
+      // 기존
+      htmlToImage
+        .toPng(imgConRef.current)
         .then(function (dataUrl) {
           const img = new Image();
           img.src = dataUrl;
