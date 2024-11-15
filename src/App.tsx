@@ -62,7 +62,7 @@ function App() {
   }, []);
   const handleCaptureBtn = () => {
     if (imgConRef.current) {
-      domToPng(document.querySelector("#backimg"))
+      domToPng(imgConRef.current)
         .then(function (dataUrl) {
           const img = new Image();
           img.src = dataUrl;
@@ -113,7 +113,11 @@ function App() {
           onDrop={handleDrop}
         >
           <div id="backimg" ref={imgConRef} className="relative">
-            <img id="droppedImage" ref={imgRef} className="object-cover" />
+            <img
+              id="droppedImage"
+              ref={imgRef}
+              className="object-cover max-w-lg"
+            />
             {messageList.length > 0 &&
               messageList.map((m, i) => (
                 <SpeechBubble
