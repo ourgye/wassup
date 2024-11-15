@@ -2,9 +2,9 @@ import { useCallback, useRef, useState } from "react";
 import "./App.css";
 import SpeechBubble from "./components/SpeechBubble";
 import MainHeader from "./components/MainHeader";
-import * as htmlToImage from "html-to-image";
 import { Button } from "./components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
+import { domToPng } from "modern-screenshot";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
@@ -61,12 +61,12 @@ function App() {
     }
   }, []);
   const handleCaptureBtn = () => {
-    if (imgConRef.current && imgRef.current) {
-      htmlToImage
-        .toPng(imgConRef.current)
+    if (imgConRef.current) {
+      domToPng(document.querySelector("#backimg"))
         .then(function (dataUrl) {
           const img = new Image();
           img.src = dataUrl;
+          img.className = "object-cover";
           document.getElementById("captured-img")?.appendChild(img);
         })
         .catch(function (error) {
@@ -79,11 +79,11 @@ function App() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <>
       <Dialog>
         <DialogTrigger asChild>
           <Button
-            className="absolute bottom-4 right-4 z-10"
+            className="fixed bottom-4 right-4 z-10"
             size={"sm"}
             onClick={handleCaptureBtn}
           >
@@ -91,48 +91,50 @@ function App() {
           </Button>
         </DialogTrigger>
         <DialogContent className="bg-gray-100">
-          <div id="captured-img"></div>
+          <div id="captured-img" className="overflow-scroll"></div>
         </DialogContent>
       </Dialog>
 
-      <MainHeader
-        setMessageList={setMessageList}
-        setIsBackgroundImage={setIsBackgroundImage}
-        messageList={messageList}
-        bubbleContainerRef={bubbleContainerRef}
-        imgRef={imgRef}
-      />
-      <div
-        className={`relative overflow-hidden h-full w-full bg-white flex justify-center items-center ${
-          isBackgroundImage ? "bg-contain bg-no-repeat bg-center" : ""
-        }`}
-        ref={bubbleContainerRef}
-        onDragOver={handleDragOver}
-        onDragEnter={handelDrageEnter}
-        onDrop={handleDrop}
-      >
-        <div id="backimg" className="max-h-full relative" ref={imgConRef}>
-          <img id="droppedImage" ref={imgRef} className="object-cover" />
-          {messageList.length > 0 &&
-            messageList.map((m, i) => (
-              <SpeechBubble
-                key={`${m.text}-${i}`}
-                data={m}
-                parent={imgConRef}
-                // onClick={() => handleBubbleClick(i)}
-              />
-            ))}
-        </div>
-        {!isBackgroundImage && (
-          <div className="w-full h-full text-base flex justify-center items-center">
-            <p>
-              + 버튼을 클릭해 말풍선을 추가해보세요. <br />
-              드래그 앤 드롭 혹은 이미지 버튼을 클릭으로 이미지를 넣어보세요.
-            </p>
+      <div className="w-full h-full flex flex-col items-center">
+        <MainHeader
+          setMessageList={setMessageList}
+          setIsBackgroundImage={setIsBackgroundImage}
+          messageList={messageList}
+          bubbleContainerRef={bubbleContainerRef}
+          imgRef={imgRef}
+        />
+        <div
+          className={`relative bg-white flex justify-center items-center ${
+            isBackgroundImage ? "bg-contain bg-no-repeat bg-center" : ""
+          }`}
+          ref={bubbleContainerRef}
+          onDragOver={handleDragOver}
+          onDragEnter={handelDrageEnter}
+          onDrop={handleDrop}
+        >
+          <div id="backimg" ref={imgConRef} className="relative">
+            <img id="droppedImage" ref={imgRef} className="object-cover" />
+            {messageList.length > 0 &&
+              messageList.map((m, i) => (
+                <SpeechBubble
+                  key={`${m.text}-${i}`}
+                  data={m}
+                  parent={imgConRef}
+                  // onClick={() => handleBubbleClick(i)}
+                />
+              ))}
           </div>
-        )}
+          {!isBackgroundImage && (
+            <div className="text-base flex justify-center items-center">
+              <p>
+                + 버튼을 클릭해 말풍선을 추가해보세요. <br />
+                드래그 앤 드롭 혹은 이미지 버튼을 클릭으로 이미지를 넣어보세요.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

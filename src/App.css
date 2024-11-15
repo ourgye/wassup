@@ -3,7 +3,7 @@
   height: 100%;
   /* margin: 1em; */
   text-align: center;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .logo {
@@ -32,6 +32,10 @@
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
+}
+
+#captured-img::-webkit-scrollbar {
+  display: none;
 }
 
 .card {
