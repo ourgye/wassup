@@ -16,7 +16,10 @@ const bubbleStyles = [
 ];
 
 const SpeechBubble: React.FC<SpeechBubbleProps> = ({ data, parent }) => {
-  const [defaultPosition, setDefaultPosition] = useState({ x: 0, y: 0 });
+  const [defaultPosition, setDefaultPosition] = useState({
+    x: Math.random() * parent.current.offsetWidth,
+    y: Math.random() * parent.current.offsetHeight,
+  });
   const bubbleRef = useRef<HTMLDivElement>(null);
 
   // 부모의 크기를 기반으로 초기 위치 설정

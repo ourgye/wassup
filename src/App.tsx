@@ -6,6 +6,7 @@ import { Button } from "./components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 import * as htmlToImage from "html-to-image";
 // import { domToImage } from "modern-screenshot";
+import html2canvas from "html2canvas";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
@@ -13,6 +14,7 @@ function App() {
   const imgRef = useRef<HTMLImageElement>(null);
   const [messageList, setMessageList] = useState<speechBubble[]>([]);
   const [isBackgroundImage, setIsBackgroundImage] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   // const handleBubbleClick = (index: number) => {
   //   setMessageList((prev) => {
   //     const newList = [...prev];
@@ -61,28 +63,34 @@ function App() {
       setIsBackgroundImage(true);
     }
   }, []);
-  const handleCaptureBtn = () => {
+  const handleCaptureBtn = async () => {
+    setLoading(true);
+
     if (imgConRef.current) {
       // 새로운 라이브러리
       // domToImage(imgConRef.current).then((item) =>
       //   document.getElementById("captured-img")?.appendChild(item)
       // );
       // 기존
-      htmlToImage
-        .toPng(imgConRef.current)
-        .then(function (dataUrl) {
-          const img = new Image();
-          img.src = dataUrl;
-          img.className = "object-cover";
-          document.getElementById("captured-img")?.appendChild(img);
-        })
-        .catch(function (error) {
-          alert("캡쳐에 실패했습니다. 다시 시도해주세요.");
-          console.error("캡처 실패..", error);
-        });
+
+      await htmlToImage.toPng(imgConRef.current);
+      await htmlToImage.toPng(imgConRef.current);
+      await htmlToImage.toPng(imgConRef.current);
+
+      const result = await htmlToImage.toPng(imgConRef.current);
+
+      const img = new Image();
+      img.src = result;
+      img.className = "object-cover";
+      document.getElementById("captured-img")?.appendChild(img);
+
+      // html2canvas(imgConRef.current).then((element) => {
+      //   document.getElementById("captured-img")?.appendChild(element);
+      // });
     } else {
       alert("failed to capture, try again");
     }
+    setLoading(false);
   };
 
   return (
@@ -98,20 +106,22 @@ function App() {
           </Button>
         </DialogTrigger>
         <DialogContent className="bg-gray-100">
+          {loading && "로딩중..."}
           <div id="captured-img" className="overflow-scroll"></div>
         </DialogContent>
       </Dialog>
 
-      <div className="w-full h-full flex flex-col items-center">
+      <div className="w-full flex flex-col items-center">
         <MainHeader
           setMessageList={setMessageList}
           setIsBackgroundImage={setIsBackgroundImage}
           messageList={messageList}
           bubbleContainerRef={bubbleContainerRef}
           imgRef={imgRef}
+          imgConRef={imgConRef}
         />
         <div
-          className={`relative bg-white flex justify-center items-center ${
+          className={`relative flex justify-center items-center ${
             isBackgroundImage ? "bg-contain bg-no-repeat bg-center" : ""
           }`}
           ref={bubbleContainerRef}
@@ -119,12 +129,16 @@ function App() {
           onDragEnter={handelDrageEnter}
           onDrop={handleDrop}
         >
-          <div id="backimg" ref={imgConRef} className="relative">
-            <img
+          <div
+            id="backimg"
+            ref={imgConRef}
+            className="relative bg-contain bg-no-repeat bg-center"
+          >
+            {/* <img
               id="droppedImage"
               ref={imgRef}
               className="object-cover max-w-lg"
-            />
+            /> */}
             {messageList.length > 0 &&
               messageList.map((m, i) => (
                 <SpeechBubble

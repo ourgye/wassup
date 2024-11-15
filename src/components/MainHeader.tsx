@@ -16,6 +16,7 @@ interface MainHeaderProps {
   setIsBackgroundImage: React.Dispatch<React.SetStateAction<boolean>>;
   bubbleContainerRef: React.RefObject<HTMLDivElement>;
   imgRef: React.RefObject<HTMLImageElement>;
+  imgConRef: React.RefObject<HTMLDivElement>;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = ({
@@ -23,6 +24,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   messageList,
   setIsBackgroundImage,
   imgRef,
+  imgConRef,
 }) => {
   const handleRemoveAllSpeechBubbles = () => {
     setMessageList([]);
@@ -32,12 +34,20 @@ const MainHeader: React.FC<MainHeaderProps> = ({
     setIsBackgroundImage(false);
 
     // droppedImage 요소 제거
-    const imgElement = document.getElementById(
-      "droppedImage"
-    ) as HTMLImageElement;
-    if (imgElement) {
-      imgElement.remove(); // 이미지를 완전히 제거
+    // const imgElement = document.getElementById(
+    //   "droppedImage"
+    // ) as HTMLImageElement;
+    // if (imgElement) {
+    //   imgElement.remove(); // 이미지를 완전히 제거
+    // }
+
+    // background 제거
+    if (imgConRef.current) {
+      imgConRef.current.style.backgroundImage = "none ";
+      imgConRef.current.style.width = `0px`;
+      imgConRef.current.style.height = `0px`;
     }
+
     const inputFile = document.getElementById("bg-img") as HTMLInputElement;
     if (inputFile) {
       inputFile.value = ""; // 파일 입력 초기화
@@ -69,11 +79,24 @@ const MainHeader: React.FC<MainHeaderProps> = ({
       }
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log(e);
         const img = new Image();
         img.src = e.target?.result as string;
         img.id = "droppedImage";
         img.onload = () => {
-          document.getElementById("backimg")?.appendChild(img);
+          console.log(img);
+          if (imgConRef.current) {
+            imgConRef.current.style.height = `${
+              img.width > window.innerWidth
+                ? (img.height / img.width) * window.innerWidth
+                : img.height
+            }px`;
+            imgConRef.current.style.width = `${
+              img.width > window.innerWidth ? window.innerWidth : img.width
+            }px`;
+            imgConRef.current.style.backgroundImage = `url(${img.src})`;
+          }
+          // document.getElementById("backimg")?.appendChild(img);
           // 배경 이미지가 설정되었음을 상태로 반영
           setIsBackgroundImage(true);
         };
