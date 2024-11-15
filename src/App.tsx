@@ -4,18 +4,7 @@ import SpeechBubble from "./components/SpeechBubble";
 import MainHeader from "./components/MainHeader";
 import * as htmlToImage from "html-to-image";
 import { Button } from "./components/ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "./components/ui/popover";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "./components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
@@ -72,7 +61,7 @@ function App() {
     }
   }, []);
   const handleCaptureBtn = () => {
-    if (imgConRef.current) {
+    if (imgConRef.current && imgRef.current) {
       htmlToImage
         .toPng(imgConRef.current)
         .then(function (dataUrl) {
@@ -84,6 +73,8 @@ function App() {
           alert("캡쳐에 실패했습니다. 다시 시도해주세요.");
           console.error("캡처 실패..", error);
         });
+    } else {
+      alert("failed to capture, try again");
     }
   };
 
