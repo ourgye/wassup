@@ -120,8 +120,8 @@ function App() {
         onDragEnter={handelDrageEnter}
         onDrop={handleDrop}
       >
-        <div id="backimg" className="size-fit relative" ref={imgConRef}>
-          <img id="droppedImage" ref={imgRef} />
+        <div id="backimg" className="max-h-full relative" ref={imgConRef}>
+          <img id="droppedImage" ref={imgRef} className="object-cover" />
           {messageList.length > 0 &&
             messageList.map((m, i) => (
               <SpeechBubble
