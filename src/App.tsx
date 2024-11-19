@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 import * as htmlToImage from "html-to-image";
 // import { domToImage } from "modern-screenshot";
 import html2canvas from "html2canvas";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const bubbleContainerRef = useRef<HTMLDivElement>(null);
